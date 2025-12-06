@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ØRIGN | Product Details</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        purato: {
+                            white: '#f6f6f6',
+                            black: '#1a1a1a',
+                            beige: '#d9cfc3',
+                            gray: '#888888'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Cart Pop Animatie */
+        @keyframes pop-bounce {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.4); color: #888888; }
+            100% { transform: scale(1); color: #1a1a1a; }
+        }
+        .animate-pop {
+            animation: pop-bounce 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        /* NIEUW: Foto Fade Effect */
+        .img-fade { opacity: 0.5; transition: opacity 0.2s ease-in-out; }
+        .img-visible { opacity: 1; transition: opacity 0.2s ease-in-out; }
+
+        /* Scroll Balk Bij Maten */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+
+        /* NIEUW: Actieve ring om kleurbolletje */
+        .color-btn.active-color {
+            transform: scale(1.1);
+            box-shadow: 0 0 0 2px #f6f6f6, 0 0 0 4px #1a1a1a; /* Dubbele ring effect */
+        }
+
+    /* WISHLIST HEART ANIMATION */
+        @keyframes heart-pop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.35); }
+            100% { transform: scale(1); }
+        }
+        
+        /* De knop zelf */
+        .wishlist-btn {
+            transition: transform 0.2s;
+        }
+        .wishlist-btn:active {
+            transform: scale(0.9);
+        }
+
+        /* Als het hartje actief (ingekleurd) is */
+        .wishlist-btn.active svg {
+            fill: #ef4444;       /* Rood invullen */
+            stroke: #ef4444;     /* Rode lijnen */
+            animation: heart-pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+    /* STIJL VOOR SOLD OUT ITEMS */
+        .sold-out-line {
+            position: relative;
+            opacity: 0.5;
+            cursor: not-allowed !important;
+            background-color: #f3f4f6;
+            color: #9ca3af;
+            border-color: #e5e7eb !important;
+        }
+        /* Het diagonale streepje */
+        .sold-out-line::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background-color: #9ca3af;
+            transform: rotate(-45deg);
+        }
+        
+        /* Knop uitgeschakeld stijl */
+        button:disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body class="bg-[#f6f6f6] text-[#1a1a1a] antialiased">
+
+    <!-- NAVIGATIE -->
+    <nav class="fixed w-full z-50 top-0 bg-[#f6f6f6]/95 backdrop-blur border-b border-gray-200 transition-all duration-300">
+        <div class="relative flex justify-between items-center py-4 px-6 md:px-12 w-full">
+            <!-- LEFT: Back Button (Aangepast met ID's) -->
+            <div class="flex items-center z-20">
+                <!-- Let op: id="back-link" is toegevoegd -->
+                <a id="back-link" href="index.html" class="text-xs font-medium hover:text-purato-gray uppercase tracking-wide flex items-center gap-1">
+                    <span>←</span> 
+                    <!-- Let op: id="back-text" is toegevoegd -->
+                    <span id="back-text" class="hidden md:inline">Back to Shop</span>
+                    <span class="md:hidden">Back</span>
+                </a>
+            </div>
+    
+            <!-- Logo -->
+            <a href="index.html" class="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 cursor-pointer hover:opacity-70 transition-opacity z-20">
+                <img src="logo.png" alt="ØRIGN" class="h-8 md:h-12 w-auto">
+            </a>
+    
+            <!-- Cart Icon -->
+            <div class="flex items-center z-20">
+                <a href="cart.html" id="cart-icon-container" class="cart-link flex items-center gap-1 text-purato-black hover:opacity-70 transition-opacity origin-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mb-[2px]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                    </svg>
+                    <span class="cart-count text-xs font-medium">(0)</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- MAIN PRODUCT SECTION -->
+    <main class="pt-24 md:pt-32 pb-24 px-6 md:px-12 max-w-[1400px] mx-auto min-h-screen">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-24">
+            
+            <!-- Linkerkant: Product Afbeelding -->
+            <div class="relative w-full aspect-[3/4] bg-[#ebebeb] overflow-hidden rounded-sm group">
+                
+                <!-- HARTJE OP PRODUCT PAGINA -->
+                <!-- We geven geen ID mee in de HTML, dat regelt het script straks automatisch -->
+                <button id="detail-wishlist-btn" class="wishlist-btn absolute top-4 right-4 z-20 p-3 bg-white/80 backdrop-blur rounded-full hover:bg-white transition-all shadow-sm opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 duration-300">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                    </svg>
+                </button>
+                <img id="product-image" src="" alt="Loading..." class="w-full h-full object-cover object-center img-visible transition-opacity duration-300">
+            </div>
+
+            <!-- Rechterkant: Product Details -->
+            <div class="flex flex-col justify-center h-full">
+                <div class="mb-6 border-b border-gray-200 pb-6">
+                    <span id="product-tag" class="text-xs text-purato-gray uppercase tracking-widest mb-2 block">New Arrival</span>
+                    <h1 id="product-name" class="text-3xl md:text-4xl font-light mb-4">Loading Product...</h1>
+                    <p id="product-price" class="text-xl font-medium">€0</p>
+                </div>
+
+                <div class="mb-8">
+                    <p id="product-desc" class="text-sm text-purato-black/70 leading-relaxed">Loading description...</p>
+                </div>
+
+                <!-- NIEUW: Kleur Selectie -->
+                <div class="mb-6">
+                    <span class="text-xs font-bold uppercase tracking-widest text-purato-black mb-3 block">
+                        Color: <span id="selected-color-name" class="font-normal text-purato-gray">Select Color</span>
+                    </span>
+                    <!-- Hier worden de bolletjes in gegenereerd via JS -->
+                    <div class="flex gap-4" id="color-container"></div>
+                </div>
+
+                <!-- Maat Selectie -->
+                <div class="mb-8">
+                    <span class="text-xs font-bold uppercase tracking-widest text-purato-black mb-3 block">Select Size</span>
+                    <div class="flex gap-3 overflow-x-auto no-scrollbar pb-2 snap-x" id="size-container"></div>
+                    <p id="size-error" class="text-red-500 text-xs mt-2 hidden">Please select a size.</p>
+                </div>
+
+                <!-- Add to Cart Knop -->
+                <button id="add-to-cart-btn" class="w-full bg-purato-black text-purato-white py-4 text-sm font-medium uppercase tracking-widest hover:bg-purato-gray transition-all duration-300 mb-6 active:scale-95">
+                    Add to Cart
+                </button>
+
+                <!-- Accordeons (Details) -->
+                <div class="border-t border-gray-200 pt-4">
+                    <details class="group cursor-pointer">
+                        <summary class="flex justify-between items-center text-xs uppercase tracking-widest font-medium py-2 list-none">
+                            Shipping & Returns
+                            <span class="transition group-open:rotate-180"><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg></span>
+                        </summary>
+                        <p class="text-xs text-gray-500 mt-2 leading-relaxed">Free shipping on orders over €150. Returns accepted within 14 days.</p>
+                    </details>
+                </div>
+                <div class="border-t border-gray-200 pt-4 mt-2">
+                    <details class="group cursor-pointer">
+                        <summary class="flex justify-between items-center text-xs uppercase tracking-widest font-medium py-2 list-none">
+                            Material & Care
+                            <span class="transition group-open:rotate-180"><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg></span>
+                        </summary>
+                        <p class="text-xs text-gray-500 mt-2 leading-relaxed">100% Premium Cotton. Machine wash cold, hang dry.</p>
+                    </details>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-purato-black text-purato-white py-12 text-center text-xs">
+        <p>&copy; 2025 ØRIGN Studios.</p>
+    </footer>
+
+<script>
+    // 1. DE DATABASE (Met voorbeelden van Sold Out)
+    const productsDatabase = [
+        // VOORBEELD 1: Per kleur verschillende maten uitverkocht
+        { 
+            id: 101, 
+            name: "The Structured Tee", 
+            price: 65, 
+            desc: "Heavyweight cotton t-shirt with a boxy fit.", 
+            sizes: ["S", "M", "L", "XL"],
+            variants: [
+                { 
+                    color: "Off-White", 
+                    hex: "#f6f6f6", 
+                    image: "https://images.unsplash.com/photo-1532453288672-3a27e9be9efd?q=80&w=1964&auto=format&fit=crop",
+                    soldOutSizes: ["S"] // <--- Alleen S is op in het Wit
+                },
+                { 
+                    color: "Midnight Black", 
+                    hex: "#1a1a1a", 
+                    image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=1780&auto=format&fit=crop",
+                    soldOutSizes: ["L", "XL"] // <--- L en XL zijn op in het Zwart
+                }
+            ]
+        },
+
+        // VOORBEELD 2: Een kleur is volledig uitverkocht (alle maten)
+        { 
+            id: 201, 
+            name: "Oxford Button Up", 
+            price: 110, 
+            desc: "Classic oxford shirt tailored from premium Italian cotton.", 
+            sizes: ["M", "L", "XL"],
+            variants: [
+                { color: "Sky Blue", hex: "#a3c1da", image: "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?q=80&w=1888&auto=format&fit=crop" },
+                { 
+                    color: "Classic White", 
+                    hex: "#ffffff", 
+                    image: "https://images.unsplash.com/photo-1589992830584-278c095379fc?q=80&w=1964&auto=format&fit=crop", 
+                    soldOut: true // <--- Deze hele kleur is op
+                }
+            ]
+        },
+
+         { 
+                id: 301, 
+                name: "Pleated Trousers", 
+                price: 140, 
+                desc: "Wide-leg trousers with double pleats.", 
+                sizes: ["30", "32", "34", "36"],
+                variants: [
+                    { color: "Charcoal", hex: "#36454F", image: "https://images.unsplash.com/photo-1509631179647-0177331693ae?q=80&w=1888&auto=format&fit=crop" },
+                    { color: "Black", hex: "#000000", image: "https://images.unsplash.com/photo-1542272454315-4c01d7abdf4a?q=80&w=2070&auto=format&fit=crop" }
+                ]
+            },
+
+            { 
+                id: 401, 
+                name: "Leather Crossbody", 
+                price: 195, 
+                desc: "Full grain leather bag with adjustable strap.", 
+                sizes: ["One Size"],
+                variants: [
+                    { color: "Black", hex: "#1a1a1a", image: "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?q=80&w=1769&auto=format&fit=crop" }
+                ]
+            },
+
+    // Button Ups (IDs 201 - 204)
+
+            { 
+                id: 201, 
+                name: "Oxford Button Up", 
+                price: 110, 
+                desc: "Classic oxford shirt tailored from premium Italian cotton. A wardrobe staple.", 
+                sizes: ["M", "L", "XL"],
+                variants: [
+                    { color: "Sky Blue", hex: "#a3c1da", image: "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?q=80&w=1888&auto=format&fit=crop" },
+                    { color: "Classic White", hex: "#ffffff", image: "https://images.unsplash.com/photo-1589992830584-278c095379fc?q=80&w=1964&auto=format&fit=crop" }
+                ]
+            },
+
+// VOORBEELD 3: Het hele product is uitverkocht
+        { 
+            id: 202, 
+            soldOut: true, // <--- Product is helemaal weg
+            name: "Linen Resort Shirt", 
+            price: 95, 
+            desc: "Breathable linen shirt designed for warmer days.", 
+            sizes: ["S", "M", "L", "XL"],
+            variants: [
+                { color: "Beige", hex: "#e6dec6", image: "https://images.unsplash.com/photo-1598033129183-c4f50c736f10?q=80&w=1925&auto=format&fit=crop" },
+                { color: "Olive Green", hex: "#556b2f", image: "https://images.unsplash.com/photo-1489987707063-3c64bd34d81a?q=80&w=2070&auto=format&fit=crop" }
+            ]
+        },
+
+        { 
+            id: 203, 
+            name: "Crisp Poplin Shirt", 
+            price: 120, 
+            desc: "Sharp, structured, and perfectly white.", 
+            sizes: ["M", "L", "XL"],
+            variants: [
+                { color: "White", hex: "#ffffff", image: "https://images.unsplash.com/photo-1620799140408-ed5341cd2431?q=80&w=1872&auto=format&fit=crop" },
+                { color: "Navy", hex: "#000080", image: "https://images.unsplash.com/photo-1603252109303-2751440ee43d?q=80&w=1887&auto=format&fit=crop" }
+            ]
+        },
+
+        { 
+            id: 204, 
+            name: "Flannel Overshirt", 
+            price: 135, 
+            desc: "Heavyweight flannel meant to be worn over a tee. Features a subtle check pattern.", 
+            sizes: ["S", "M", "L", "XL", "XXL"],
+            variants: [
+                { color: "Grey Check", hex: "#808080", image: "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?q=80&w=1936&auto=format&fit=crop" },
+                { color: "Red Check", hex: "#8b0000", image: "https://images.unsplash.com/photo-1626462760455-d682490d89c3?q=80&w=1887&auto=format&fit=crop" }
+            ]
+        },
+
+    // Bottoms (ID's 301 - 304)
+
+        { 
+            id: 301, 
+            name: "Pleated Trousers", 
+            price: 140, 
+            desc: "Wide-leg trousers with double pleats. Combines classic tailoring with a modern, relaxed silhouette.", 
+            sizes: ["30", "32", "34", "36"],
+            variants: [
+                // Kleur 1: Charcoal (Jouw originele foto)
+                { color: "Charcoal", hex: "#36454F", image: "https://images.unsplash.com/photo-1509631179647-0177331693ae?q=80&w=1888&auto=format&fit=crop" },
+                // Kleur 2: Deep Black (Nieuwe variant)
+                { color: "Deep Black", hex: "#000000", image: "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?q=80&w=2070&auto=format&fit=crop" }
+            ]
+        },
+
+        { 
+            id: 302, 
+            name: "Technical Cargo", 
+            price: 145, 
+            desc: "Utility focused design featuring multiple pockets, adjustable hems, and durable water-resistant fabric.", 
+            sizes: ["S", "M", "L", "XL"],
+            variants: [
+                // Kleur 1: Olive (Jouw originele foto)
+                { color: "Olive Green", hex: "#556b2f", image: "https://images.unsplash.com/photo-1605763240004-7e93b172d754?q=80&w=1887&auto=format&fit=crop" },
+                // Kleur 2: Concrete Grey (Nieuwe variant)
+                { color: "Concrete Grey", hex: "#808080", image: "https://images.unsplash.com/photo-1517445312882-563630f9d99c?q=80&w=1978&auto=format&fit=crop" }
+            ]
+        },
+
+        { 
+            id: 303, 
+            name: "Wide Leg Denim", 
+            price: 110, 
+            desc: "Heavyweight denim with a vintage wash. Cut for a loose, comfortable fit that stacks perfectly over shoes.", 
+            sizes: ["30", "32", "34", "36"],
+            variants: [
+                // Kleur 1: Washed Blue (Jouw originele foto)
+                { color: "Washed Blue", hex: "#6ca0dc", image: "https://images.unsplash.com/photo-1542272454315-4c01d7abdf4a?q=80&w=2070&auto=format&fit=crop" },
+                // Kleur 2: Faded Black (Nieuwe variant)
+                { color: "Faded Black", hex: "#2f2f2f", image: "https://images.unsplash.com/photo-1582552938357-32b906df40cb?q=80&w=1935&auto=format&fit=crop" }
+            ]
+        },
+
+        { 
+            id: 304, 
+            name: "Smart Chino", 
+            price: 100, 
+            desc: "The everyday essential. Made from soft stretch-cotton for all-day comfort and a sharp look.", 
+            sizes: ["30", "32", "34", "36"],
+            variants: [
+                // Kleur 1: Sand (Jouw originele foto)
+                { color: "Sand", hex: "#c2b280", image: "https://images.unsplash.com/photo-1473966968600-fa801b869a1a?q=80&w=1887&auto=format&fit=crop" },
+                // Kleur 2: Navy (Nieuwe variant)
+                { color: "Navy", hex: "#000080", image: "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?q=80&w=1887&auto=format&fit=crop" }
+            ]
+        },
+
+    // Accessories (ID's 401 - 406)
+
+        {
+            id: 401,
+            name: "Leather Crossbody Bag",
+            price: 195,
+            desc: "Crafted from full-grain leather. Features an adjustable strap and silver-tone hardware. Perfect for daily essentials.",
+            sizes: ["One Size"],
+            variants: [
+                { color: "Matte Black", hex: "#1a1a1a", image: "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?q=80&w=1769&auto=format&fit=crop" },
+                { color: "Cognac Brown", hex: "#8b4513", image: "https://images.unsplash.com/photo-1590874103328-eac38a683ce7?q=80&w=1938&auto=format&fit=crop" }
+            ]
+        },
+
+        {
+            id: 402,
+            name: "Minimalist Ring",
+            price: 85,
+            desc: "Hand-polished ring with a subtle brushed finish. A timeless addition to any outfit.",
+            sizes: ["7", "8", "9", "10"],
+            variants: [
+                { color: "Sterling Silver", hex: "#c0c0c0", image: "https://images.unsplash.com/photo-1617038224558-28ad7cbce869?q=80&w=1887&auto=format&fit=crop" },
+                { color: "14k Gold", hex: "#d4af37", image: "https://images.unsplash.com/photo-1605100804763-247f67b3557e?q=80&w=1767&auto=format&fit=crop" }
+            ]
+        },
+
+        {
+            id: 403,
+            name: "Ribbed Beanie",
+            price: 40,
+            desc: "Soft merino wool blend to keep you warm without overheating. Signature minimal label.",
+            sizes: ["One Size"],
+            variants: [
+                { color: "Stone Grey", hex: "#888888", image: "https://images.unsplash.com/photo-1576871337622-98d48d1cf531?q=80&w=1887&auto=format&fit=crop" },
+                { color: "Navy Blue", hex: "#000080", image: "https://images.unsplash.com/photo-1576871337632-b9aef4c17ab9?q=80&w=1887&auto=format&fit=crop" }
+            ]
+        },
+
+        {
+            id: 404,
+            name: "Canvas Tote",
+            price: 55,
+            desc: "Heavy-duty cotton canvas tote. Spacious enough for a laptop and daily groceries.",
+            sizes: ["One Size"],
+            variants: [
+                { color: "Raw Cotton", hex: "#f0ead6", image: "https://images.unsplash.com/photo-1597484662317-9bd7bdda2907?q=80&w=1887&auto=format&fit=crop" },
+                { color: "Faded Black", hex: "#2f2f2f", image: "https://images.unsplash.com/photo-1622560417282-5f30bcb95427?q=80&w=1935&auto=format&fit=crop" }
+            ]
+        },
+
+        {
+            id: 405,
+            name: "Acetate Sunglasses",
+            price: 130,
+            desc: "Premium acetate frames with UV400 protection lenses. Boxy, modern shape.",
+            sizes: ["One Size"],
+            variants: [
+                { color: "Tortoise", hex: "#5e4835", image: "https://images.unsplash.com/photo-1511499767150-a48a237f0083?q=80&w=1760&auto=format&fit=crop" },
+                { color: "Gloss Black", hex: "#000000", image: "https://images.unsplash.com/photo-1577803645773-f96470509666?q=80&w=1974&auto=format&fit=crop" }
+            ]
+        },
+
+        {
+            id: 406,
+            name: "Silk Scarf",
+            price: 70,
+            desc: "100% Mulberry silk scarf with hand-rolled edges. Adds texture and elegance.",
+            sizes: ["One Size"],
+            variants: [
+                { color: "Midnight Blue", hex: "#191970", image: "https://images.unsplash.com/photo-1584030373081-f37b7bb4fa8e?q=80&w=1891&auto=format&fit=crop" },
+                { color: "Pearl Beige", hex: "#e8e4c9", image: "https://images.unsplash.com/photo-1601924994987-69e26d50dc26?q=80&w=1935&auto=format&fit=crop" }
+            ]
+        },
+
+    // Shoes (ID's 501 - 504)
+
+        { 
+            id: 501, 
+            name: "Chunky Leather Loafer", 
+            price: 210, 
+            desc: "Modern interpretation of a classic penny loafer. Features a chunky rubber sole and polished leather upper.", 
+            sizes: ["35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46"],
+            variants: [
+                { color: "Black", hex: "#1a1a1a", image: "https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?q=80&w=2070&auto=format&fit=crop" },
+                { color: "Deep Burgundy", hex: "#4a0404", image: "https://images.unsplash.com/photo-1595341888016-a392ef81b7de?q=80&w=1779&auto=format&fit=crop" }
+            ]
+        },
+
+        { 
+            id: 502, 
+            name: "Minimal Court Sneaker", 
+            price: 160, 
+            desc: "Handcrafted low-top sneaker. Made from Italian leather with a clean, unbranded profile.", 
+            sizes: ["35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46"],
+            variants: [
+                { color: "Off-White", hex: "#f0f0f0", image: "https://images.unsplash.com/photo-1549298916-b41d501d3772?q=80&w=2012&auto=format&fit=crop" },
+                { color: "White / Green", hex: "#2e8b57", image: "https://images.unsplash.com/photo-1600269452121-4f2416e55c28?q=80&w=1965&auto=format&fit=crop" }
+            ]
+        },
+
+        { 
+            id: 503, 
+            name: "Suede Chelsea Boot", 
+            price: 240, 
+            desc: "The versatile boot for every season. Soft calf suede with durable elastic side panels.", 
+            sizes: ["35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46"],
+            variants: [
+                { color: "Sand", hex: "#c2b280", image: "https://images.unsplash.com/photo-1605732562742-3023a888e56e?q=80&w=1935&auto=format&fit=crop" },
+                { color: "Dark Chocolate", hex: "#3e2723", image: "https://images.unsplash.com/photo-1621251933099-07469a572a12?q=80&w=1887&auto=format&fit=crop" }
+            ]
+        },
+
+        { 
+            id: 504, 
+            name: "Derby Shoe", 
+            price: 195, 
+            desc: "Timeless open-lacing shoe. Perfect for formal occasions or elevating a casual look.", 
+            sizes: ["35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46"],
+            variants: [
+                { color: "Polished Black", hex: "#000000", image: "https://images.unsplash.com/photo-1603145733190-59811e523c72?q=80&w=2070&auto=format&fit=crop" },
+                { color: "Cognac", hex: "#8b4513", image: "https://images.unsplash.com/photo-1533867617858-e7b97e060509?q=80&w=2069&auto=format&fit=crop" }
+            ]
+        }
+    ];
+
+// VARIABELEN
+    let currentProduct = null;
+    let selectedSize = null;
+    let currentVariant = null;
+    const addToCartBtn = document.getElementById('add-to-cart-btn');
+
+    // PAGINA LADEN
+    document.addEventListener('DOMContentLoaded', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = parseInt(urlParams.get('id'));
+        currentProduct = productsDatabase.find(p => p.id === productId);
+
+        // BACK KNOP LOGICA
+        const backLink = document.getElementById('back-link');
+        const backText = document.getElementById('back-text');
+        if (backLink) {
+            if (productId >= 200 && productId < 300) { backLink.href = "button-ups.html"; backText.textContent = "Back to Button Ups"; } 
+            else if (productId >= 300 && productId < 400) { backLink.href = "bottoms.html"; backText.textContent = "Back to Bottoms"; } 
+            else if (productId >= 400 && productId < 500) { backLink.href = "accessories.html"; backText.textContent = "Back to Accessories"; } 
+            else if (productId >= 500 && productId < 600) { backLink.href = "shoes.html"; backText.textContent = "Back to Shoes"; }
+            else { backLink.href = "index.html"; backText.textContent = "Back to Shop"; }
+        }
+
+        if (currentProduct) {
+            document.getElementById('product-name').textContent = currentProduct.name;
+            document.getElementById('product-price').textContent = "€" + currentProduct.price;
+            document.getElementById('product-desc').textContent = currentProduct.desc;
+            document.title = "ØRIGN | " + currentProduct.name;
+
+            if (currentProduct.soldOut === true) {
+                disableAddToCart("Product Sold Out");
+            }
+
+            // Eerste variant laden
+            if (currentProduct.variants && currentProduct.variants.length > 0) {
+                // SelectVariant zorgt nu ook voor het tekenen van de maten!
+                selectVariant(currentProduct.variants[0]); 
+                renderColorButtons(currentProduct.variants);
+            }
+            
+        } else {
+            document.querySelector('main').innerHTML = `<div class='text-center py-20'>Product not found.</div>`;
+        }
+        forceUpdateCart();
+    });
+
+    // NIEUWE FUNCTIE: TEKEN MATEN (Gebaseerd op de HUIDIGE kleur)
+    function renderSizeButtons() {
+        const sizeContainer = document.getElementById('size-container');
+        sizeContainer.innerHTML = '';
+        
+        // Kijk naar de Sold Out lijst van de HUIDIGE variant (of leeg als die er niet is)
+        const soldOutList = currentVariant.soldOutSizes || [];
+
+        currentProduct.sizes.forEach(size => {
+            const btn = document.createElement('button');
+            const isSoldOut = soldOutList.includes(size);
+
+            let classes = "flex-shrink-0 snap-center whitespace-nowrap border px-4 py-2 text-sm transition-colors focus:outline-none min-w-[3rem] ";
+            
+            // Als de kleur helemaal op is, zijn alle maten ook niet beschikbaar
+            if (currentVariant.soldOut || isSoldOut) {
+                classes += "sold-out-line";
+                btn.disabled = true;
+            } else {
+                classes += "border-gray-300 hover:border-black";
+                // Als deze maat geselecteerd was, hou hem zwart
+                if (selectedSize === size) {
+                    classes = classes.replace("border-gray-300", "bg-black text-white border-black");
+                }
+                btn.onclick = () => selectSize(btn, size);
+            }
+
+            btn.className = classes;
+            btn.textContent = size;
+            sizeContainer.appendChild(btn);
+        });
+    }
+
+    // KLEUR KNOPPEN MAKEN
+    function renderColorButtons(variants) {
+        const container = document.getElementById('color-container');
+        container.innerHTML = ''; 
+
+        variants.forEach(variant => {
+            const btn = document.createElement('button');
+            btn.className = "color-btn w-8 h-8 rounded-full border border-gray-300 shadow-sm focus:outline-none transition-transform hover:scale-105 relative";
+            btn.style.backgroundColor = variant.hex;
+            
+            if(variant.hex === '#ffffff' || variant.hex === '#f6f6f6') {
+                btn.style.borderColor = '#d1d5db';
+            } else {
+                btn.style.borderColor = variant.hex; 
+            }
+
+            if (variant.soldOut) {
+                btn.style.opacity = "0.4";
+                btn.title = "Sold Out";
+            }
+
+            btn.onclick = () => selectVariant(variant, btn);
+            container.appendChild(btn);
+        });
+        
+        const btns = container.querySelectorAll('.color-btn');
+        if(btns.length > 0) btns[0].classList.add('active-color');
+    }
+
+    // KLEUR KIEZEN
+    function selectVariant(variant, clickedBtn = null) {
+        currentVariant = variant;
+        document.getElementById('selected-color-name').textContent = variant.color;
+
+        // Foto Wissel
+        const img = document.getElementById('product-image');
+        img.classList.remove('img-visible');
+        img.classList.add('img-fade');
+        setTimeout(() => {
+            img.src = variant.image;
+            img.onload = () => { img.classList.remove('img-fade'); img.classList.add('img-visible'); };
+            setTimeout(() => { img.classList.remove('img-fade'); img.classList.add('img-visible'); }, 50);
+        }, 200);
+
+        // Knoppen Styling
+        if(clickedBtn) {
+            document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active-color'));
+            clickedBtn.classList.add('active-color');
+        }
+
+        // RESET LOGICA
+        // Als je van kleur wisselt, en de gekozen maat is in de nieuwe kleur uitverkocht: deselecteer maat.
+        if (selectedSize && variant.soldOutSizes && variant.soldOutSizes.includes(selectedSize)) {
+            selectedSize = null;
+        }
+
+        // TEKEN DE MATEN OPNIEUW (Want Sold Out is anders per kleur!)
+        renderSizeButtons();
+
+        // Check winkelwagen knop
+        if (currentProduct.soldOut) {
+            disableAddToCart("Product Sold Out");
+        } else if (variant.soldOut) {
+            disableAddToCart("Color Sold Out");
+        } else {
+            enableAddToCart();
+        }
+    }
+
+    // MAAT KIEZEN
+    function selectSize(btn, size) {
+        const allBtns = document.getElementById('size-container').children;
+        for(let b of allBtns) {
+            if (!b.classList.contains('sold-out-line')) {
+                b.classList.remove('bg-black', 'text-white', 'border-black');
+                b.classList.add('border-gray-300');
+            }
+        }
+        btn.classList.remove('border-gray-300');
+        btn.classList.add('bg-black', 'text-white', 'border-black');
+        selectedSize = size;
+        document.getElementById('size-error').classList.add('hidden');
+    }
+
+    function disableAddToCart(text) {
+        addToCartBtn.textContent = text;
+        addToCartBtn.disabled = true;
+        addToCartBtn.classList.add('bg-gray-300', 'text-gray-500', 'cursor-not-allowed');
+        addToCartBtn.classList.remove('bg-purato-black', 'text-purato-white', 'hover:bg-purato-gray');
+    }
+
+    function enableAddToCart() {
+        addToCartBtn.textContent = "Add to Cart";
+        addToCartBtn.disabled = false;
+        addToCartBtn.classList.remove('bg-gray-300', 'text-gray-500', 'cursor-not-allowed');
+        addToCartBtn.classList.add('bg-purato-black', 'text-purato-white', 'hover:bg-purato-gray');
+    }
+
+    addToCartBtn.addEventListener('click', () => {
+        if(!currentProduct || addToCartBtn.disabled) return;
+        
+        if(!selectedSize && currentProduct.sizes[0] !== "One Size") {
+            document.getElementById('size-error').classList.remove('hidden');
+            return;
+        }
+
+        const cartItem = {
+            id: currentProduct.id,
+            name: currentProduct.name,
+            price: currentProduct.price,
+            image: currentVariant ? currentVariant.image : "placeholder.jpg", 
+            color: currentVariant ? currentVariant.color : "Default",          
+            size: selectedSize || "One Size",
+            quantity: 1
+        };
+
+        let cart = JSON.parse(localStorage.getItem('puratoCart')) || [];
+        cart.push(cartItem);
+        localStorage.setItem('puratoCart', JSON.stringify(cart));
+
+        const originalText = addToCartBtn.textContent;
+        addToCartBtn.textContent = "Added to Cart";
+        addToCartBtn.classList.add('bg-green-700', 'border-green-700', 'text-white');
+        
+        forceUpdateCart();
+        const cartIcon = document.getElementById('cart-icon-container');
+        cartIcon.classList.remove('animate-pop');
+        void cartIcon.offsetWidth; 
+        cartIcon.classList.add('animate-pop');
+
+        setTimeout(() => {
+            addToCartBtn.textContent = originalText;
+            addToCartBtn.classList.remove('bg-green-700', 'border-green-700', 'text-white');
+            cartIcon.classList.remove('animate-pop');
+        }, 2000);
+    });
+
+    function forceUpdateCart() {
+        try {
+            const savedCart = JSON.parse(localStorage.getItem('puratoCart')) || [];
+            document.querySelectorAll('.cart-count').forEach(el => el.textContent = `(${savedCart.length})`);
+        } catch (error) {}
+    }
+</script>
+
+<script>
+    // --- WISHLIST LOGICA ---
+
+    // 1. Initialiseren bij laden pagina
+    document.addEventListener('DOMContentLoaded', () => {
+        updateWishlistUI();
+        
+        // Speciaal voor product.html: Koppel het grote hartje
+        const detailBtn = document.getElementById('detail-wishlist-btn');
+        if (detailBtn && typeof currentProduct !== 'undefined') {
+            // Check of dit product al geliked is
+            const wishlist = JSON.parse(localStorage.getItem('orignWishlist')) || [];
+            if (wishlist.includes(currentProduct.id)) {
+                detailBtn.classList.add('active');
+            }
+            
+            // Klik event toevoegen
+            detailBtn.onclick = (e) => toggleWishlist(e, currentProduct.id);
+        }
+    });
+
+    // 2. De Functie die het hartje toggelt
+    function toggleWishlist(event, productId) {
+        // Voorkom dat de link naar de productpagina wordt gevolgd (belangrijk!)
+        event.preventDefault(); 
+        event.stopPropagation();
+
+        // Haal huidige lijst op
+        let wishlist = JSON.parse(localStorage.getItem('orignWishlist')) || [];
+        const btn = event.currentTarget; // De knop waarop geklikt is
+
+        if (wishlist.includes(productId)) {
+            // VERWIJDEREN: Het zit er al in
+            wishlist = wishlist.filter(id => id !== productId);
+            btn.classList.remove('active');
+        } else {
+            // TOEVOEGEN: Het zit er nog niet in
+            wishlist.push(productId);
+            btn.classList.add('active');
+        }
+
+        // Opslaan in browser
+        localStorage.setItem('orignWishlist', JSON.stringify(wishlist));
+    }
+
+    // 3. UI Update functie (zorgt dat hartjes rood blijven na F5)
+    function updateWishlistUI() {
+        const wishlist = JSON.parse(localStorage.getItem('orignWishlist')) || [];
+        
+        // Zoek alle knoppen op de pagina (bijv op index.html)
+        document.querySelectorAll('.wishlist-btn[data-id]').forEach(btn => {
+            const id = parseInt(btn.getAttribute('data-id'));
+            if (wishlist.includes(id)) {
+                btn.classList.add('active');
+            }
+        });
+    }
+</script>
+</body>
+</html>
