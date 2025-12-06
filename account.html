@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ØRIGN | My Account</title> 
+    
+    <!-- Fonts & Tailwind -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { purato: { white: '#f6f6f6', black: '#1a1a1a', gray: '#888888' } },
+                    fontFamily: { sans: ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-[#f6f6f6] text-[#1a1a1a] antialiased">
+
+    <!-- NAVIGATIE -->
+    <nav class="fixed w-full z-50 top-0 bg-[#f6f6f6]/95 backdrop-blur border-b border-gray-200">
+        <div class="relative flex justify-between items-center py-4 px-6 md:px-12 w-full">
+            <div class="flex items-center z-20">
+                <a href="index.html" class="text-xs font-medium hover:text-purato-gray uppercase tracking-wide">
+                    ← Back to Home
+                </a>
+            </div>
+            <a href="index.html" class="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                <img src="logo.png" alt="ØRIGN" class="h-8 md:h-12 w-auto">
+            </a>
+            <div class="flex items-center z-20">
+                <a href="cart.html" class="cart-link flex items-center gap-1 text-purato-black hover:opacity-70">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mb-[2px]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg>
+                    <span class="cart-count text-xs font-medium">(0)</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HEADER -->
+    <header class="pt-32 pb-12 text-center px-4">
+        <h1 class="text-4xl font-light mb-2">My Account</h1>
+        <p class="text-xs text-gray-500 uppercase tracking-widest">Manage your profile</p>
+    </header>
+
+    <main class="max-w-md mx-auto px-6 pb-24">
+        
+        <!-- 1. LOGIN / REGISTER FORM (Zichtbaar als je NIET bent ingelogd) -->
+        <div id="auth-section" class="bg-white p-8 shadow-sm border border-gray-100">
+            <div class="flex border-b border-gray-200 mb-6">
+                <button onclick="switchTab('login')" id="tab-login" class="w-1/2 pb-3 text-sm uppercase tracking-widest font-medium border-b-2 border-black">Login</button>
+                <button onclick="switchTab('register')" id="tab-register" class="w-1/2 pb-3 text-sm uppercase tracking-widest font-medium text-gray-400 border-b-2 border-transparent">Register</button>
+            </div>
+
+            <!-- LOGIN FORM -->
+            <form id="login-form" class="space-y-4">
+                <div>
+                    <label class="block text-xs uppercase text-gray-500 mb-1">Email</label>
+                    <input type="email" id="login-email" required class="w-full bg-[#f6f6f6] px-4 py-3 text-sm outline-none focus:ring-1 focus:ring-black">
+                </div>
+                <div>
+                    <label class="block text-xs uppercase text-gray-500 mb-1">Password</label>
+                    <input type="password" id="login-pass" required class="w-full bg-[#f6f6f6] px-4 py-3 text-sm outline-none focus:ring-1 focus:ring-black">
+                </div>
+                <button type="submit" class="w-full bg-purato-black text-white py-3 text-xs uppercase tracking-widest hover:bg-gray-800">Sign In</button>
+                <p id="login-error" class="text-red-500 text-xs text-center hidden">Invalid email or password.</p>
+            </form>
+
+            <!-- REGISTER FORM (Standaard verborgen) -->
+            <form id="register-form" class="space-y-4 hidden">
+                <div>
+                    <label class="block text-xs uppercase text-gray-500 mb-1">Full Name</label>
+                    <input type="text" id="reg-name" required class="w-full bg-[#f6f6f6] px-4 py-3 text-sm outline-none focus:ring-1 focus:ring-black">
+                </div>
+                <div>
+                    <label class="block text-xs uppercase text-gray-500 mb-1">Email</label>
+                    <input type="email" id="reg-email" required class="w-full bg-[#f6f6f6] px-4 py-3 text-sm outline-none focus:ring-1 focus:ring-black">
+                </div>
+                <div>
+                    <label class="block text-xs uppercase text-gray-500 mb-1">Password</label>
+                    <input type="password" id="reg-pass" required class="w-full bg-[#f6f6f6] px-4 py-3 text-sm outline-none focus:ring-1 focus:ring-black">
+                </div>
+                <button type="submit" class="w-full bg-purato-black text-white py-3 text-xs uppercase tracking-widest hover:bg-gray-800">Create Account</button>
+            </form>
+        </div>
+
+        <!-- 2. PROFILE SECTION (Zichtbaar als je WEL bent ingelogd) -->
+        <div id="profile-section" class="hidden bg-white p-8 shadow-sm border border-gray-100 text-center">
+            <div class="w-20 h-20 bg-gray-200 rounded-full mx-auto flex items-center justify-center mb-4 text-2xl">
+                👤
+            </div>
+            <h2 class="text-xl font-light mb-1">Welcome back, <span id="user-name" class="font-medium">User</span></h2>
+            <p class="text-sm text-gray-500 mb-8" id="user-email">email@example.com</p>
+
+            <div class="border-t border-gray-200 py-6 text-left space-y-3">
+                <a href="#" class="block text-sm hover:text-purato-gray flex justify-between">My Orders <span>→</span></a>
+                <a href="#" class="block text-sm hover:text-purato-gray flex justify-between">Addresses <span>→</span></a>
+                <a href="#" class="block text-sm hover:text-purato-gray flex justify-between">Wishlist <span>→</span></a>
+            </div>
+
+            <button onclick="logout()" class="w-full border border-black py-3 text-xs uppercase tracking-widest hover:bg-black hover:text-white transition-colors">
+                Log Out
+            </button>
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-purato-black text-white py-8 text-center text-xs">
+        <p>&copy; 2025 ØRIGN Studios.</p>
+    </footer>
+
+    <!-- LOGICA SCRIPT -->
+    <script>
+        // 1. WISSELEN TUSSEN LOGIN EN REGISTER
+        function switchTab(tab) {
+            const loginForm = document.getElementById('login-form');
+            const regForm = document.getElementById('register-form');
+            const loginBtn = document.getElementById('tab-login');
+            const regBtn = document.getElementById('tab-register');
+
+            if(tab === 'login') {
+                loginForm.classList.remove('hidden');
+                regForm.classList.add('hidden');
+                loginBtn.classList.replace('text-gray-400', 'text-black');
+                loginBtn.classList.replace('border-transparent', 'border-black');
+                regBtn.classList.replace('text-black', 'text-gray-400');
+                regBtn.classList.replace('border-black', 'border-transparent');
+            } else {
+                loginForm.classList.add('hidden');
+                regForm.classList.remove('hidden');
+                regBtn.classList.replace('text-gray-400', 'text-black');
+                regBtn.classList.replace('border-transparent', 'border-black');
+                loginBtn.classList.replace('text-black', 'text-gray-400');
+                loginBtn.classList.replace('border-black', 'border-transparent');
+            }
+        }
+
+        // 2. REGISTREREN (Opslaan in browser)
+        document.getElementById('register-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('reg-name').value;
+            const email = document.getElementById('reg-email').value;
+            const pass = document.getElementById('reg-pass').value;
+
+            // Sla op in localStorage (Let op: dit is niet super veilig voor echte wachtwoorden, maar prima voor dit doel)
+            const user = { name, email, pass };
+            localStorage.setItem('orignUser', JSON.stringify(user));
+
+            alert('Account created! Please log in.');
+            switchTab('login');
+        });
+
+        // 3. INLOGGEN
+        document.getElementById('login-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const pass = document.getElementById('login-pass').value;
+            
+            // Haal opgeslagen gebruiker op
+            const savedUser = JSON.parse(localStorage.getItem('orignUser'));
+
+            if (savedUser && savedUser.email === email && savedUser.pass === pass) {
+                // Succes! Sla "sessie" op
+                localStorage.setItem('orignIsLoggedIn', 'true');
+                checkLoginStatus();
+            } else {
+                document.getElementById('login-error').classList.remove('hidden');
+            }
+        });
+
+        // 4. UITLOGGEN
+        function logout() {
+            localStorage.removeItem('orignIsLoggedIn');
+            checkLoginStatus();
+        }
+
+        // 5. STATUS CHECKEN (Bij laden pagina)
+        function checkLoginStatus() {
+            const isLoggedIn = localStorage.getItem('orignIsLoggedIn') === 'true';
+            const authSection = document.getElementById('auth-section');
+            const profileSection = document.getElementById('profile-section');
+            const savedUser = JSON.parse(localStorage.getItem('orignUser'));
+
+            if (isLoggedIn && savedUser) {
+                // Laat profiel zien
+                authSection.classList.add('hidden');
+                profileSection.classList.remove('hidden');
+                document.getElementById('user-name').textContent = savedUser.name;
+                document.getElementById('user-email').textContent = savedUser.email;
+            } else {
+                // Laat login zien
+                authSection.classList.remove('hidden');
+                profileSection.classList.add('hidden');
+            }
+        }
+
+        // Voer uit bij laden
+        checkLoginStatus();
+        
+        // Cart update (standaard)
+        function forceUpdateCart() {
+            try {
+                const savedCart = JSON.parse(localStorage.getItem('puratoCart')) || [];
+                document.querySelectorAll('.cart-count').forEach(el => el.textContent = `(${savedCart.length})`);
+            } catch (error) {}
+        }
+        document.addEventListener('DOMContentLoaded', forceUpdateCart);
+    </script>
+</body>
+</html>
