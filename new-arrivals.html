@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ØRIGN | New Arrivals</title> 
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { purato: { white: '#f6f6f6', black: '#1a1a1a', gray: '#888888' } },
+                    fontFamily: { sans: ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+
+    <!-- CSS VOOR HET HARTJE (Dit ontbrak) -->
+    <style>
+        /* WISHLIST HEART ANIMATION */
+        @keyframes heart-pop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.35); }
+            100% { transform: scale(1); }
+        }
+        
+        .wishlist-btn { transition: transform 0.2s; }
+        .wishlist-btn:active { transform: scale(0.9); }
+
+        /* Als het hartje actief is */
+        .wishlist-btn.active svg {
+            fill: #ef4444;       
+            stroke: #ef4444;     
+            animation: heart-pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+    </style>
+</head>
+<body class="bg-[#f6f6f6] text-[#1a1a1a] antialiased">
+
+    <!-- NAVIGATIE (Aangepaste versie: Minimalist) -->
+    <nav class="fixed w-full z-50 top-0 bg-[#f6f6f6]/95 backdrop-blur border-b border-gray-200 transition-all duration-300">
+        <div class="relative flex justify-between items-center py-4 px-6 md:px-12 w-full">
+            
+            <!-- LEFT: Back Button -->
+            <!-- Op mobiel: 'BACK'. Op desktop: 'BACK TO HOME'. Voorkomt overlap. -->
+            <div class="flex items-center z-20">
+                <a href="index.html" class="text-xs font-medium hover:text-purato-gray uppercase tracking-wide">
+                    <span class="md:hidden">← Back</span>
+                    <span class="hidden md:inline">← Back to Home</span>
+                </a>
+            </div>
+    
+            <!-- CENTER: Logo -->
+            <!-- Absolute positie. h-8 op mobiel, h-12 op desktop. -->
+            <a href="index.html" class="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 cursor-pointer hover:opacity-70 transition-opacity z-20">
+                <img src="logo.png" alt="ØRIGN" class="h-12 md:h-12 w-auto">
+            </a>
+    
+            <!-- RIGHT: Cart Icon -->
+            <div class="flex items-center z-20">
+                <a href="cart.html" class="cart-link flex items-center gap-1 text-purato-black hover:opacity-70 transition-opacity">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mb-[2px]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                    </svg>
+                    <span class="cart-count text-xs font-medium">(0)</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HEADER -->
+    <header class="pt-32 pb-12 text-center px-4">
+        <h1 class="text-4xl font-light mb-2" id="header-title">New Arrivals</h1>
+        <p class="text-xs text-gray-500 uppercase tracking-widest">Fall / Winter 2025</p>
+    </header>
+
+    <!-- PRODUCT GRID -->
+    <section class="max-w-7xl mx-auto px-6 pb-24">
+        <div id="product-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12">
+            <!-- Items worden hieronder ingeladen via Javascript -->
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-[#1a1a1a] text-white py-12 text-center text-xs">
+        <p>&copy; 2025 ØRIGN Studios.</p>
+    </footer>
+
+    <!-- 1. PRODUCT RENDER SCRIPT -->
+    <script>
+        // DATA
+        const products = [
+            { id: 101, name: "The Structured Tee", price: "€65", color: "Off-White", image: "https://images.unsplash.com/photo-1532453288672-3a27e9be9efd?q=80&w=1964&auto=format&fit=crop", tag: "Just In" },
+            { id: 201, name: "Oxford Button Up", price: "€110", color: "Sky Blue", image: "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?q=80&w=1888&auto=format&fit=crop", tag: "New" },
+            { id: 301, name: "Pleated Trousers", price: "€140", color: "Charcoal", image: "https://images.unsplash.com/photo-1509631179647-0177331693ae?q=80&w=1888&auto=format&fit=crop", tag: "New" },
+            { id: 401, name: "Leather Crossbody", price: "€195", color: "Black", image: "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?q=80&w=1769&auto=format&fit=crop", tag: "Limited" },
+        ];
+
+// RENDER DE PRODUCTEN (Met Hartje!)
+        const container = document.getElementById('product-container');
+        if(container) {
+            products.forEach(product => {
+                container.innerHTML += `
+                    <a href="product.html?id=${product.id}" class="group cursor-pointer block">
+                        <div class="relative overflow-hidden bg-[#ebebeb] aspect-[3/4] mb-4">
+                            
+                            <!-- HIER IS HET HARTJE TOEGEVOEGD -->
+                            <!-- 'event' zorgt dat we niet naar de pagina gaan, product.id zorgt dat we de juiste liken -->
+                            <button onclick="toggleWishlist(event, ${product.id})" 
+                                    class="wishlist-btn absolute top-3 right-3 z-20 p-2 rounded-full hover:bg-white/50 transition-colors" 
+                                    data-id="${product.id}">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                                </svg>
+                            </button>
+
+                            <!-- De Afbeelding -->
+                            <img src="${product.image}" alt="${product.name}" 
+                                 class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                            
+                            <!-- De Tag (New/Bestseller etc) -->
+                            ${product.tag ? `<span class="absolute top-4 left-4 text-[10px] bg-white/90 backdrop-blur-sm px-3 py-1 uppercase tracking-widest font-medium">${product.tag}</span>` : ''}
+                        </div>
+                        
+                        <!-- De Tekst onder de foto -->
+                        <div class="flex justify-between items-start pt-1">
+                            <div class="space-y-1">
+                                <h4 class="text-sm font-medium text-[#1a1a1a] group-hover:text-purato-gray transition-colors">${product.name}</h4>
+                                <p class="text-xs text-purato-gray">${product.color}</p>
+                            </div>
+                            <span class="text-sm font-medium tracking-wide">${product.price}</span>
+                        </div>
+                    </a>
+                `;
+            });
+        }
+    </script>
+
+    <!-- 2. CART UPDATE SCRIPT -->
+    <script>
+        function forceUpdateCart() {
+            try {
+                const savedCart = JSON.parse(localStorage.getItem('puratoCart')) || [];
+                const count = savedCart.length;
+                
+                const countElements = document.querySelectorAll('.cart-count');
+                countElements.forEach(el => {
+                    el.textContent = `(${count})`;
+                });
+
+            } catch (error) {
+                console.error("Cart update error:", error);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', forceUpdateCart);
+        window.addEventListener('pageshow', forceUpdateCart);
+    </script>
+
+<!-- WISHLIST LOGICA (Moet op elke pagina staan) -->
+    <script>
+        // Initialiseren
+        document.addEventListener('DOMContentLoaded', updateWishlistUI);
+
+        // Functie om te liken
+        function toggleWishlist(event, productId) {
+            // Dit is cruciaal: Stop de link naar de productpagina!
+            event.preventDefault(); 
+            event.stopPropagation();
+
+            let wishlist = JSON.parse(localStorage.getItem('orignWishlist')) || [];
+            const btn = event.currentTarget;
+
+            if (wishlist.includes(productId)) {
+                wishlist = wishlist.filter(id => id !== productId);
+                btn.classList.remove('active');
+            } else {
+                wishlist.push(productId);
+                btn.classList.add('active');
+            }
+            localStorage.setItem('orignWishlist', JSON.stringify(wishlist));
+        }
+
+        // Zorgt dat hartjes rood blijven als je de pagina herlaadt
+        function updateWishlistUI() {
+            const wishlist = JSON.parse(localStorage.getItem('orignWishlist')) || [];
+            document.querySelectorAll('.wishlist-btn[data-id]').forEach(btn => {
+                // We halen het ID uit data-id="..." en maken er een nummer van
+                const id = parseInt(btn.getAttribute('data-id'));
+                if (wishlist.includes(id)) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+    </script>
+</body>
+</html>
