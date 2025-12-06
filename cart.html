@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ØRIGN | Your Bag</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        purato: {
+                            white: '#f6f6f6',
+                            black: '#1a1a1a',
+                            beige: '#d9cfc3',
+                            gray: '#888888'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Animatie voor de checkout modal */
+        .fade-in { animation: fadeIn 0.3s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+    
+    /* WISHLIST HEART ANIMATION */
+        @keyframes heart-pop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.35); }
+            100% { transform: scale(1); }
+        }
+        
+        /* De knop zelf */
+        .wishlist-btn {
+            transition: transform 0.2s;
+        }
+        .wishlist-btn:active {
+            transform: scale(0.9);
+        }
+
+        /* Als het hartje actief (ingekleurd) is */
+        .wishlist-btn.active svg {
+            fill: #ef4444;       /* Rood invullen */
+            stroke: #ef4444;     /* Rode lijnen */
+            animation: heart-pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+    </style>
+</head>
+<body class="bg-[#f6f6f6] text-[#1a1a1a] antialiased">
+
+    <!-- NAVIGATIE -->
+    <nav class="fixed w-full z-50 top-0 bg-[#f6f6f6]/95 backdrop-blur border-b border-gray-200 transition-all duration-300">
+        <div class="relative flex justify-between items-center py-4 px-6 md:px-12 w-full">
+            
+            <!-- LEFT: Continue Shopping -->
+            <div class="flex items-center z-20">
+                <a href="index.html" class="text-xs font-medium hover:text-purato-gray uppercase tracking-wide">
+                    <span class="hidden md:inline">← Continue Shopping</span>
+                    <span class="md:hidden">← Shop</span>
+                </a>
+            </div>
+    
+            <!-- CENTER: Logo -->
+            <a href="index.html" class="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 cursor-pointer hover:opacity-70 transition-opacity z-20">
+                <img src="logo.png" alt="ØRIGN" class="h-8 md:h-12 w-auto">
+            </a>
+    
+            <!-- RIGHT: Cart Icon -->
+            <div class="flex items-center z-20">
+                <div class="flex items-center gap-1 text-purato-black cursor-default">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mb-[2px]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                    </svg>
+                    <span class="cart-count text-xs font-medium">(0)</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HEADER -->
+    <header class="pt-32 pb-8 px-6 md:px-12 text-center border-b border-gray-200">
+        <h1 class="text-3xl font-light uppercase tracking-wide">Your Bag</h1>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="min-h-[60vh] max-w-7xl mx-auto px-6 md:px-12 py-12 relative">
+        
+        <!-- EMPTY STATE -->
+        <div id="empty-cart-msg" class="hidden text-center py-20">
+            <p class="text-purato-gray mb-6">Your bag is currently empty.</p>
+            <a href="index.html" class="inline-block bg-purato-black text-white px-8 py-3 text-xs font-medium uppercase tracking-widest hover:bg-gray-800 transition-colors">
+                Start Shopping
+            </a>
+        </div>
+
+        <!-- FILLED STATE -->
+        <div id="cart-content" class="hidden grid grid-cols-1 lg:grid-cols-3 gap-12">
+            
+            <!-- Linker Kolom: Product Lijst -->
+            <div class="lg:col-span-2 space-y-8" id="cart-items-container">
+                <!-- Items worden hier dynamisch geplaatst -->
+            </div>
+
+            <!-- Rechter Kolom: Order Summary -->
+            <div class="lg:col-span-1">
+                <div class="bg-white p-8 sticky top-32 shadow-sm border border-gray-100">
+                    <h3 class="text-sm font-bold uppercase tracking-widest mb-6">Order Summary</h3>
+                    
+                    <div class="space-y-4 text-sm mb-6 border-b border-gray-200 pb-6">
+                        <div class="flex justify-between">
+                            <span class="text-gray-500">Subtotal</span>
+                            <span id="summary-subtotal">€0</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-500">Shipping</span>
+                            <span id="summary-shipping" class="text-gray-900">Calculated at checkout</span>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-between text-base font-medium mb-8">
+                        <span>Total</span>
+                        <span id="summary-total">€0</span>
+                    </div>
+
+                    <button id="checkout-btn" onclick="startCheckout()" class="w-full bg-purato-black text-white py-4 text-sm font-medium uppercase tracking-widest hover:bg-gray-800 transition-colors">
+                        Checkout
+                    </button>
+                    
+                    <p id="shipping-message" class="text-[10px] text-gray-400 text-center mt-4">
+                        <!-- Tekst over gratis verzending komt hier -->
+                    </p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-purato-black text-purato-white py-12 text-center text-xs mt-auto">
+        <p>&copy; 2025 ØRIGN Studios.</p>
+    </footer>
+
+    <!-- PAYMENT SUCCESS MODAL -->
+    <div id="success-modal" class="hidden fixed inset-0 z-[60] flex items-center justify-center bg-black/50 backdrop-blur-sm">
+        <div class="bg-white p-8 md:p-12 max-w-md w-full text-center shadow-2xl fade-in mx-4">
+            <div class="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+            </div>
+            <h2 class="text-2xl font-light mb-2">Order Confirmed!</h2>
+            <p class="text-gray-500 text-sm mb-8">Thank you for your purchase. You will receive an email confirmation shortly.</p>
+            <button onclick="finishOrder()" class="w-full bg-purato-black text-white py-3 text-xs font-medium uppercase tracking-widest hover:bg-gray-800">
+                Continue Shopping
+            </button>
+        </div>
+    </div>
+
+    <!-- SCRIPT LOGICA -->
+    <script>
+        const SHIPPING_COST = 15;
+        const FREE_SHIPPING_THRESHOLD = 150;
+
+        // 1. CART RENDEREN
+        function renderCart() {
+            const cart = JSON.parse(localStorage.getItem('puratoCart')) || [];
+            const container = document.getElementById('cart-items-container');
+            const emptyMsg = document.getElementById('empty-cart-msg');
+            const content = document.getElementById('cart-content');
+            
+            forceUpdateCart();
+
+            if (cart.length === 0) {
+                emptyMsg.classList.remove('hidden');
+                content.classList.add('hidden');
+                content.classList.remove('grid');
+            } else {
+                emptyMsg.classList.add('hidden');
+                content.classList.remove('hidden');
+                content.classList.add('grid');
+
+                container.innerHTML = ''; 
+                let subtotal = 0;
+
+                cart.forEach((item, index) => {
+                    subtotal += item.price;
+                    
+                    // Hier controleren we of er een kleur is opgeslagen
+                    const colorDisplay = item.color ? `<p class="text-xs text-gray-500">Color: ${item.color}</p>` : '';
+
+                    container.innerHTML += `
+                        <div class="flex gap-6 border-b border-gray-200 pb-6 last:border-0">
+                            <!-- Foto: item.image bevat nu de specifieke kleur-foto URL -->
+                            <div class="w-24 h-32 bg-[#ebebeb] flex-shrink-0 overflow-hidden">
+                                <img src="${item.image}" alt="${item.name}" class="w-full h-full object-cover">
+                            </div>
+                            
+                            <!-- Info -->
+                            <div class="flex-1 flex flex-col justify-between">
+                                <div>
+                                    <div class="flex justify-between items-start">
+                                        <h4 class="font-medium text-sm md:text-base text-purato-black">${item.name}</h4>
+                                        <span class="font-medium text-sm">€${item.price}</span>
+                                    </div>
+                                    <!-- Maat en Kleur Info -->
+                                    <div class="mt-2 space-y-1">
+                                        <p class="text-xs text-gray-500">Size: ${item.size}</p>
+                                        ${colorDisplay} 
+                                    </div>
+                                </div>
+                                
+                                <button onclick="removeItem(${index})" class="text-xs text-red-500 hover:text-red-700 underline self-start uppercase tracking-wider">
+                                    Remove
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                updateSummary(subtotal);
+            }
+        }
+
+        // 2. ITEM VERWIJDEREN
+        function removeItem(index) {
+            let cart = JSON.parse(localStorage.getItem('puratoCart')) || [];
+            cart.splice(index, 1);
+            localStorage.setItem('puratoCart', JSON.stringify(cart));
+            renderCart();
+        }
+
+        // 3. PRIJZEN & VERZENDKOSTEN
+        function updateSummary(subtotal) {
+            const shippingElem = document.getElementById('summary-shipping');
+            const totalElem = document.getElementById('summary-total');
+            const messageElem = document.getElementById('shipping-message');
+
+            let shipping = SHIPPING_COST;
+            
+            if (subtotal >= FREE_SHIPPING_THRESHOLD) {
+                shipping = 0;
+                shippingElem.textContent = "Free";
+                shippingElem.classList.add('text-green-700');
+                shippingElem.classList.remove('text-gray-900');
+                messageElem.textContent = "You qualify for free shipping!";
+            } else {
+                shippingElem.textContent = `€${shipping}`;
+                shippingElem.classList.remove('text-green-700');
+                shippingElem.classList.add('text-gray-900');
+                const remaining = FREE_SHIPPING_THRESHOLD - subtotal;
+                messageElem.textContent = `Add €${remaining} more for free shipping.`;
+            }
+
+            document.getElementById('summary-subtotal').textContent = `€${subtotal}`;
+            document.getElementById('summary-total').textContent = `€${subtotal + shipping}`;
+        }
+
+        // 4. HEADER NUMMER
+        function forceUpdateCart() {
+            try {
+                const savedCart = JSON.parse(localStorage.getItem('puratoCart')) || [];
+                const countElements = document.querySelectorAll('.cart-count');
+                countElements.forEach(el => {
+                    el.textContent = `(${savedCart.length})`;
+                });
+            } catch (error) { console.error(error); }
+        }
+
+        // 5. CHECKOUT
+        function startCheckout() {
+            const btn = document.getElementById('checkout-btn');
+            const originalText = btn.textContent;
+            btn.textContent = "Processing...";
+            btn.disabled = true;
+            btn.classList.add('opacity-75', 'cursor-not-allowed');
+
+            setTimeout(() => {
+                document.getElementById('success-modal').classList.remove('hidden');
+                btn.textContent = originalText;
+                btn.disabled = false;
+                btn.classList.remove('opacity-75', 'cursor-not-allowed');
+            }, 1500);
+        }
+
+        // 6. FINISH
+        function finishOrder() {
+            localStorage.removeItem('puratoCart');
+            document.getElementById('success-modal').classList.add('hidden');
+            renderCart();
+        }
+
+        document.addEventListener('DOMContentLoaded', renderCart);
+        window.addEventListener('pageshow', renderCart);
+    </script>
+</body>
+</html>
